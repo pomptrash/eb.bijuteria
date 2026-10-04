@@ -1,8 +1,11 @@
-import { verifySession } from "@/lib/auth";
-import { logoutAction } from "../actions";
+import { prisma } from "@/lib/prisma";
+import Link from "next/link";
 
 export default async function DashboardPage() {
-  const session = await verifySession();
+  const [totalProdutos, totalCategorias] = await Promise.all([
+    prisma.produto.count(),
+    prisma.categoria.count(),
+  ])
 
   return (
     <div className="space-y-6">
@@ -13,19 +16,42 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <h2 className="text-sm font-medium text-gray-500">Produtos</h2>
-          <p className="text-3xl font-bold text-slate-800 mt-2">0</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-gray-500">
+              Produtos Cadastrados
+            </h2>
+            <p className="text-3xl font-bold text-slate-800 mt-2">
+              {totalProdutos}
+            </p>
+          </div>
+          <Link
+            href="/admin/produtos"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-md transition-colors"
+          >
+            Gerenciar →
+          </Link>
         </div>
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <h2 className="text-sm font-medium text-gray-500">Categorias</h2>
-          <p className="text-3xl font-bold text-slate-800 mt-2">0</p>
+
+        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm flex items-center justify-between">
+          <div>
+            <h2 className="text-sm font-medium text-gray-500">
+              Categorias Cadastradas
+            </h2>
+            <p className="text-3xl font-bold text-slate-800 mt-2">
+              {totalCategorias}
+            </p>
+          </div>
+          <Link
+            href="/admin/categorias"
+            className="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-2 rounded-md transition-colors"
+          >
+            Gerenciar →
+          </Link>
         </div>
-        <div className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <h2 className="text-sm font-medium text-gray-500">Vendas</h2>
-          <p className="text-3xl font-bold text-slate-800 mt-2">0</p>
-        </div>
+        
       </div>
     </div>
   );
