@@ -12,6 +12,13 @@ datasource db {
   provider = "postgresql"
 }
 
+model Categoria {
+  id        String    @id @default(uuid())
+  nome      String    @unique
+  produtos  Produto[]
+  createdAt DateTime  @default(now())
+}
+
 model Produto {
   id          String   @id @default(uuid())
   nome        String
@@ -20,8 +27,10 @@ model Produto {
   quantidade  Int      @default(0)
   imagemUrl   String?
   ativo       Boolean  @default(true)
+  categoriaId String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  categoria   Categoria? @relation(fields: [categoriaId], references: [id])
 }
 
 model Admin {
