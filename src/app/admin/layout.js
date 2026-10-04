@@ -45,7 +45,7 @@ export default async function AdminLayout({ children }) {
               href="/admin/vendas"
               className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
             >
-              Vendas
+              Vendas (Em breve)
             </Link>
           </nav>
         </div>
