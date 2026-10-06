@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from "react";
 import { createProductAction, updateProductAction } from "./actions";
+import ImageUploader from "./productImageUploader";
 
 export default function ProductFormModal({ produto, categorias, onClose }) {
   const isEditing = Boolean(produto);
@@ -119,6 +120,8 @@ export default function ProductFormModal({ produto, categorias, onClose }) {
               placeholder="Ex: 10"
             />
           </div>
+
+          <ImageUploader imagensExistentes={produto?.imagensUrl || []} />
 
           <div className="flex justify-end gap-2 pt-2">
             <button

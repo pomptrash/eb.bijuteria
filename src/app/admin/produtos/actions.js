@@ -10,6 +10,8 @@ export async function createProductAction(prevState, formData) {
   const categoriaId = formData.get("categoriaId")?.toString();
   const quantidade = parseInt(formData.get("quantidade") || "0")
 
+  const imagensUrl = formData.getAll("imagensUrl").map((url) => url.toString());
+
 if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0) {
     return { error: "Preencha o nome, preço, uma quantidade válida (maior ou igual a 0) e selecione uma categoria." };
   }
@@ -21,7 +23,8 @@ if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0
         preco,
         descricao,
         categoriaId,
-        quantidade
+        quantidade,
+        imagensUrl,
       },
     });
 
@@ -41,6 +44,8 @@ export async function updateProductAction(prevState, formData) {
   const categoriaId = formData.get("categoriaId")?.toString();
   const quantidade = parseInt(formData.get("quantidade") || "0")
 
+  const imagensUrl = formData.getAll("imagensUrl").map((url) => url.toString());
+
 if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0) {
     return { error: "Preencha o nome, preço, uma quantidade válida (maior ou igual a 0) e selecione uma categoria." };
   }
@@ -53,7 +58,8 @@ if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0
         preco,
         descricao,
         categoriaId,
-        quantidade
+        quantidade,
+        imagensUrl,
       },
     });
 
