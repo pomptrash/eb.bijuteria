@@ -54,6 +54,7 @@ export default function ProductTable({ produtos, categorias }) {
                   <th className="py-2 px-3 font-semibold">Nome</th>
                   <th className="py-2 px-3 font-semibold">Categoria</th>
                   <th className="py-2 px-3 font-semibold">Preço</th>
+                  <th className="py-2 px-3 font-semibold">Quantidade</th>
                   <th className="py-2 px-3 font-semibold text-right">Ações</th>
                 </tr>
               </thead>
@@ -78,6 +79,9 @@ export default function ProductTable({ produtos, categorias }) {
                         style: "currency",
                         currency: "BRL",
                       })}
+                    </td>
+                    <td className="py-3 px-3 font-semibold text-gray-800">
+                      {prod.quantidade}
                     </td>
                     <td className="py-3 px-3 text-right space-x-3">
                       <button

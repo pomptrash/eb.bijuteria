@@ -8,9 +8,10 @@ export async function createProductAction(prevState, formData) {
   const preco = parseFloat(formData.get("preco")?.toString() || "0");
   const descricao = formData.get("descricao")?.toString().trim() || null;
   const categoriaId = formData.get("categoriaId")?.toString();
+  const quantidade = parseInt(formData.get("quantidade") || "0")
 
-  if (!nome || isNaN(preco) || !categoriaId) {
-    return { error: "Preencha o nome, preço e selecione uma categoria." };
+if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0) {
+    return { error: "Preencha o nome, preço, uma quantidade válida (maior ou igual a 0) e selecione uma categoria." };
   }
 
   try {
@@ -20,6 +21,7 @@ export async function createProductAction(prevState, formData) {
         preco,
         descricao,
         categoriaId,
+        quantidade
       },
     });
 
@@ -37,9 +39,10 @@ export async function updateProductAction(prevState, formData) {
   const preco = parseFloat(formData.get("preco")?.toString() || "0");
   const descricao = formData.get("descricao")?.toString().trim() || null;
   const categoriaId = formData.get("categoriaId")?.toString();
+  const quantidade = parseInt(formData.get("quantidade") || "0")
 
-  if (!id || !nome || isNaN(preco) || !categoriaId) {
-    return { error: "Preencha todos os campos obrigatórios." };
+if (!nome || isNaN(preco) || !categoriaId || isNaN(quantidade) || quantidade < 0) {
+    return { error: "Preencha o nome, preço, uma quantidade válida (maior ou igual a 0) e selecione uma categoria." };
   }
 
   try {
@@ -50,6 +53,7 @@ export async function updateProductAction(prevState, formData) {
         preco,
         descricao,
         categoriaId,
+        quantidade
       },
     });
 

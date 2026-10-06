@@ -99,6 +99,7 @@ export default function CartDrawer() {
                   </span>
                   <button
                     onClick={() => updateQuantity(item.id, 1)}
+                    disabled={item.quantidade >= item.estoqueMaximo}
                     className="text-xs font-bold text-brand-chocolate hover:text-brand-gold px-1"
                   >
                     +

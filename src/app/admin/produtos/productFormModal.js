@@ -104,6 +104,22 @@ export default function ProductFormModal({ produto, categorias, onClose }) {
             />
           </div>
 
+          <div className="flex flex-col gap-1">
+            <label htmlFor="quantidade" className="text-xs font-medium text-zinc-700">
+              Quantidade em estoque
+            </label>
+            <input
+              type="number"
+              id="quantidade"
+              name="quantidade"
+              min="0"
+              defaultValue={produto?.quantidade ?? 0}
+              required
+              className="px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500"
+              placeholder="Ex: 10"
+            />
+          </div>
+
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"

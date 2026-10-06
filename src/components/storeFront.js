@@ -5,7 +5,7 @@ import { useCart } from "../context/cartContext";
 
 export default function StoreFront({ produtos, categorias }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState("TODOS");
-  const { addToCart, setIsOpen, totalItems } = useCart();
+  const { cart, addToCart, setIsOpen, totalItems } = useCart();
 
   // Filtragem dinamica de produtos
   const produtosFiltrados =
@@ -112,46 +112,69 @@ export default function StoreFront({ produtos, categorias }) {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {produtosFiltrados.map((prod) => (
-              <div
-                key={prod.id}
-                className="group bg-brand-creme/60 hover:bg-brand-creme rounded-2xl p-3 border border-brand-creme transition-all duration-300 hover:shadow-md flex flex-col justify-between"
-              >
-                <div>
-                  <div className="relative aspect-square rounded-xl overflow-hidden bg-[#e0d4c5] mb-3 flex items-center justify-center text-brand-chocolate/40 text-xs">
-                    {/* Placeholder para imagem */}
-                    <span>✨ EB Bijuterias</span>
-                    <span className="absolute top-2 left-2 bg-brand-bg/90 backdrop-blur-sm text-[10px] font-medium px-2.5 py-0.5 rounded-full text-brand-chocolate">
-                      {prod.categoria?.nome || "Bijuteria"}
-                    </span>
+            {produtosFiltrados.map((prod) => {
+              // Procura a quantidade que o cliente já colocou no carrinho
+              const itemNoCarrinho = cart.find((item) => item.id === prod.id);
+              const qtdNoCarrinho = itemNoCarrinho ? itemNoCarrinho.quantidade : 0;
+
+              // O produto está sem estoque total ou o cliente já atingiu o limite do estoque?
+              const atingiuLimite = qtdNoCarrinho >= prod.quantidade || prod.quantidade <= 0;
+
+              return (
+                <div
+                  key={prod.id}
+                  className="group bg-brand-creme/60 hover:bg-brand-creme rounded-2xl p-3 border border-brand-creme transition-all duration-300 hover:shadow-md flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="relative aspect-square rounded-xl overflow-hidden bg-[#e0d4c5] mb-3 flex items-center justify-center text-brand-chocolate/40 text-xs">
+                      {/* Placeholder para imagem */}
+                      <span>✨ EB Bijuterias</span>
+                      <span className="absolute top-2 left-2 bg-brand-bg/90 backdrop-blur-sm text-[10px] font-medium px-2.5 py-0.5 rounded-full text-brand-chocolate">
+                        {prod.categoria?.nome || "Bijuteria"}
+                      </span>
+                    </div>
+
+                    <h3 className="text-xs md:text-sm font-medium text-brand-chocolate line-clamp-2">
+                      {prod.nome}
+                    </h3>
+                    {prod.descricao && (
+                      <p className="text-[11px] text-brand-chocolate/70 line-clamp-3 mt-0.5">
+                        {prod.descricao}
+                      </p>
+                    )}
+                    <p className="text-[11px] opacity-50">
+                      ({prod.quantidade} unidades em estoque)
+                    </p>
                   </div>
 
-                  <h3 className="text-xs md:text-sm font-medium text-brand-chocolate line-clamp-2">
-                    {prod.nome}
-                  </h3>
-                  {prod.descricao && (
-                    <p className="text-[11px] text-brand-chocolate/70 line-clamp-1 mt-0.5">
-                      {prod.descricao}
-                    </p>
-                  )}
+                  <div className="mt-3 pt-2 border-t border-brand-chocolate/5 flex items-center justify-between">
+                    <span className="text-xs md:text-sm font-bold text-brand-chocolate">
+                      {Number(prod.preco).toLocaleString("pt-BR", {
+                        style: "currency",
+                        currency: "BRL",
+                      })}
+                    </span>
+                    <button
+                      disabled={atingiuLimite}
+                      onClick={() => addToCart(prod)}
+                      className={`text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all flex items-center gap-1 shadow-sm ${
+                        !atingiuLimite
+                          ? "bg-brand-gold hover:bg-brand-goldHover text-white active:scale-95"
+                          : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                      }`}
+                    >
+                      {!atingiuLimite ? (
+                        <>
+                          <span>+</span> Adicionar
+                        </>
+                      ) : (
+                        "Esgotado"
+                      )}
+                    </button>
+                  </div>
                 </div>
-
-                <div className="mt-3 pt-2 border-t border-brand-chocolate/5 flex items-center justify-between">
-                  <span className="text-xs md:text-sm font-bold text-brand-chocolate">
-                    {Number(prod.preco).toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </span>
-                  <button
-                    onClick={() => addToCart(prod)}
-                    className="bg-brand-gold hover:bg-brand-goldHover text-white text-[11px] font-semibold px-3 py-1.5 rounded-full transition-all flex items-center gap-1 shadow-sm active:scale-95"
-                  >
-                    <span>+</span> Adicionar
-                  </button>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </main>
