@@ -5,6 +5,8 @@ import { useCart } from "../context/cartContext";
 
 export default function StoreFront({ produtos, categorias }) {
   const [categoriaAtiva, setCategoriaAtiva] = useState("TODOS");
+  const [produtoModal, setProdutoModal] = useState(null);
+  const [imagemAtiva, setImagemAtiva] = useState(0);
   const { cart, addToCart, setIsOpen, totalItems } = useCart();
 
   // Filtragem dinamica de produtos
@@ -64,7 +66,8 @@ export default function StoreFront({ produtos, categorias }) {
             O toque final que faltava no seu look
           </h2>
           <p className="text-xs md:text-sm text-brand-chocolate/80 mt-2 max-w-md mx-auto">
-            Bijuterias cheias de estilo e personalidade selecionadas com carinho.
+            Bijuterias cheias de estilo e personalidade selecionadas com
+            carinho.
           </p>
           <a
             href="#catalogo"
@@ -108,17 +111,22 @@ export default function StoreFront({ produtos, categorias }) {
       <main className="max-w-6xl mx-auto px-4">
         {produtosFiltrados.length === 0 ? (
           <div className="text-center py-12 text-brand-chocolate/60">
-            <p className="text-sm">Nenhum produto encontrado nesta categoria.</p>
+            <p className="text-sm">
+              Nenhum produto encontrado nesta categoria.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {produtosFiltrados.map((prod) => {
               // Procura a quantidade que o cliente já colocou no carrinho
               const itemNoCarrinho = cart.find((item) => item.id === prod.id);
-              const qtdNoCarrinho = itemNoCarrinho ? itemNoCarrinho.quantidade : 0;
+              const qtdNoCarrinho = itemNoCarrinho
+                ? itemNoCarrinho.quantidade
+                : 0;
 
               // O produto está sem estoque total ou o cliente já atingiu o limite do estoque?
-              const atingiuLimite = qtdNoCarrinho >= prod.quantidade || prod.quantidade <= 0;
+              const atingiuLimite =
+                qtdNoCarrinho >= prod.quantidade || prod.quantidade <= 0;
 
               return (
                 <div
@@ -126,9 +134,24 @@ export default function StoreFront({ produtos, categorias }) {
                   className="group bg-brand-creme/60 hover:bg-brand-creme rounded-2xl p-3 border border-brand-creme transition-all duration-300 hover:shadow-md flex flex-col justify-between"
                 >
                   <div>
-                    <div className="relative aspect-square rounded-xl overflow-hidden bg-[#e0d4c5] mb-3 flex items-center justify-center text-brand-chocolate/40 text-xs">
-                      {/* Placeholder para imagem */}
-                      <span>✨ EB Bijuterias</span>
+                    <div
+                      onClick={() => {
+                        setProdutoModal(prod);
+                        setImagemAtiva(0);
+                      }}
+                      className="relative aspect-square rounded-xl overflow-hidden bg-[#e0d4c5] mb-3 flex items-center justify-center text-brand-chocolate/40 text-xs cursor-pointer group-hover:opacity-90 transition-opacity"
+                    >
+                      {prod.imagensUrl && prod.imagensUrl.length > 0 ? (
+                        <img
+                          src={prod.imagensUrl[0]}
+                          alt={prod.nome}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        /* Placeholder fallback caso não haja imagem */
+                        <span>✨ EB Bijuterias</span>
+                      )}
+
                       <span className="absolute top-2 left-2 bg-brand-bg/90 backdrop-blur-sm text-[10px] font-medium px-2.5 py-0.5 rounded-full text-brand-chocolate">
                         {prod.categoria?.nome || "Bijuteria"}
                       </span>
@@ -206,6 +229,107 @@ export default function StoreFront({ produtos, categorias }) {
           </span>
         </button>
       </div>
+
+      {/* MODAL / GALERIA DE FOTOS DO PRODUTO */}
+      {produtoModal && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-brand-bg rounded-3xl p-6 max-w-sm w-full shadow-2xl relative border border-brand-creme">
+            {/* Botão Fechar */}
+            <button
+              onClick={() => setProdutoModal(null)}
+              className="absolute top-4 right-4 text-brand-chocolate/60 hover:text-brand-chocolate text-sm font-bold bg-brand-creme w-8 h-8 rounded-full flex items-center justify-center"
+            >
+              ✕
+            </button>
+
+            {/* Imagem Principal em Destaque */}
+            <div className="aspect-square rounded-2xl overflow-hidden bg-[#e0d4c5] mb-3 flex items-center justify-center">
+              {produtoModal.imagensUrl && produtoModal.imagensUrl.length > 0 ? (
+                <img
+                  src={produtoModal.imagensUrl[imagemAtiva]}
+                  alt={produtoModal.nome}
+                  className="w-full h-full object-cover transition-all"
+                />
+              ) : (
+                <span className="text-brand-chocolate/40 text-xs">
+                  ✨ EB Bijuterias
+                </span>
+              )}
+            </div>
+
+            {/* Miniaturas da Galeria (se houver mais de 1 imagem) */}
+            {produtoModal.imagensUrl && produtoModal.imagensUrl.length > 1 && (
+              <div className="flex justify-center gap-2 mb-4">
+                {produtoModal.imagensUrl.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setImagemAtiva(idx)}
+                    className={`w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                      imagemAtiva === idx
+                        ? "border-brand-gold scale-105"
+                        : "border-transparent opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={img}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Info do Produto no Modal */}
+            <h3 className="font-serif font-bold text-lg text-brand-chocolate mb-1">
+              {produtoModal.nome}
+            </h3>
+            {produtoModal.descricao && (
+              <p className="text-xs text-brand-chocolate/70 mb-3 leading-relaxed">
+                {produtoModal.descricao}
+              </p>
+            )}
+
+            <div className="flex items-center justify-between pt-3 border-t border-brand-creme mt-2">
+              <span className="text-base font-bold text-brand-chocolate">
+                {Number(produtoModal.preco).toLocaleString("pt-BR", {
+                  style: "currency",
+                  currency: "BRL",
+                })}
+              </span>
+
+              {/* Botão de Adicionar no Modal */}
+              {(() => {
+                const itemNoCarrinho = cart.find(
+                  (item) => item.id === produtoModal.id,
+                );
+                const qtdNoCarrinho = itemNoCarrinho
+                  ? itemNoCarrinho.quantidade
+                  : 0;
+                const atingiuLimite =
+                  qtdNoCarrinho >= produtoModal.quantidade ||
+                  produtoModal.quantidade <= 0;
+
+                return (
+                  <button
+                    disabled={atingiuLimite}
+                    onClick={() => {
+                      addToCart(produtoModal);
+                    }}
+                    className={`text-xs font-semibold px-4 py-2 rounded-full transition-all flex items-center gap-1 shadow-sm ${
+                      !atingiuLimite
+                        ? "bg-brand-gold hover:bg-brand-goldHover text-white active:scale-95"
+                        : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {!atingiuLimite ? "+ Adicionar à Sacola" : "Esgotado"}
+                  </button>
+                );
+              })()}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
