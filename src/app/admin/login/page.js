@@ -29,7 +29,7 @@ export default function LoginPage() {
               name="email"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="admin@ebbijuteria.com"
+              placeholder="Email"
             />
           </div>
 
@@ -42,7 +42,7 @@ export default function LoginPage() {
               name="senha"
               required
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-black"
-              placeholder="••••••••"
+              placeholder="Senha"
             />
           </div>
 
